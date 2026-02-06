@@ -1,0 +1,6 @@
+/stuff
+requirements.txt
+/.idea
+transcript.txt
+*.pyc
+config.py
