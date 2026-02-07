@@ -1,11 +1,10 @@
-from ui.logger import log
 from os import cpu_count
+from ui.main_window import MainWindow
 
-def load_local_llm(model_path: str, ui_text_widget=None):
+def load_local_llm(model_path: str, window: MainWindow):
     from llama_cpp import Llama
 
-    if ui_text_widget:
-        log(ui_text_widget, "Загружаем локальную LLM...")
+    window.log("Загружаем локальную LLM...")
 
     llm = Llama(
         model_path=model_path,
@@ -14,4 +13,5 @@ def load_local_llm(model_path: str, ui_text_widget=None):
         verbose=False,
         n_gpu_layers=1
     )
+
     return llm

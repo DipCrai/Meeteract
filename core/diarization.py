@@ -1,7 +1,7 @@
-from ui.logger import log
+from ui.main_window import MainWindow
 
-def diarize_audio(file_path: str, ui_text_widget):
-    log(ui_text_widget, "Загрузка аудио для диаризации...")
+def diarize_audio(file_path: str, window: MainWindow):
+    window.log("Загрузка аудио для диаризации...")
 
     from torch import device
     from torchaudio import load
@@ -10,12 +10,12 @@ def diarize_audio(file_path: str, ui_text_widget):
 
     waveform, sample_rate = load(file_path)
 
-    log(ui_text_widget, "Загрузка модели диаризации...")
+    window.log("Загрузка модели диаризации...")
     pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1")
     if is_available():
         pipeline.to(device("cuda"))
 
-    log(ui_text_widget, "Обработка аудио...")
+    window.log("Обработка аудио...")
     output = pipeline({"waveform": waveform, "sample_rate": sample_rate})
 
     segments = []

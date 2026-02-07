@@ -1,12 +1,13 @@
-from ui.logger import log
+from core.IO import remove_file
+from ui.main_window import MainWindow
 
-def transcribe_segments(wav_path: str, segments, ui_text_widget, model_name: str = "large"):
+def transcribe_segments(wav_path: str, segments, window: MainWindow, model_name: str = "large"):
     from numpy import isfinite, nan_to_num
     from whisper import load_model
     from soundfile import read
     from torch.cuda import is_available
 
-    log(ui_text_widget, "Запуск Whisper для транскрипции...")
+    window.log("Запуск Whisper для транскрипции...")
     device = "cuda" if is_available() else "cpu"
     model = load_model(model_name, device=device)
 
@@ -30,7 +31,7 @@ def transcribe_segments(wav_path: str, segments, ui_text_widget, model_name: str
         if not isfinite(segment_audio).all():
             segment_audio = nan_to_num(segment_audio)
 
-        log(ui_text_widget, f"Транскрибируем сегмент {i}/{len(valid_segments)}...")
+        window.log(f"Транскрибируем сегмент {i}/{len(valid_segments)}...")
 
         try:
             res = model.transcribe(
@@ -44,7 +45,9 @@ def transcribe_segments(wav_path: str, segments, ui_text_widget, model_name: str
             if text:
                 results.append((speaker, text))
         except Exception as e:
-            log(ui_text_widget, f"Ошибка на сегменте {i}: {e}")
+            window.log(f"Ошибка на сегменте {i}: {e}")
 
-    log(ui_text_widget, "Транскрипция завершена")
+    window.log("Транскрипция завершена")
+    remove_file(wav_path)
+
     return results

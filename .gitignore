@@ -4,3 +4,4 @@ requirements.txt
 transcript.txt
 *.pyc
 config.py
+core/ffmpeg.exe
