@@ -5,3 +5,4 @@ transcript.txt
 *.pyc
 config.py
 core/ffmpeg.exe
+temp_audio.wav
