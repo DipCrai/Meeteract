@@ -56,7 +56,7 @@ def _build_messages(state, user_input: str, memory_turns: int = 2):
 
 def ask_gpt(llm, state, user_input: str):
     messages = _build_messages(state, user_input, memory_turns=2)
-    answer = local_llm_chat(llm, messages, temperature=0.2, max_tokens=256)
+    answer = local_llm_chat(llm, messages, temperature=0.2)
 
     state["memory"].append({"role": "user", "content": user_input})
     state["memory"].append({"role": "assistant", "content": answer})
@@ -75,7 +75,7 @@ def summarize_meeting(llm, state):
     """.strip()
 
     messages = _build_messages(state, summary_prompt, memory_turns=0)
-    summary = local_llm_chat(llm, messages, temperature=0.2, max_tokens=256)
+    summary = local_llm_chat(llm, messages, temperature=0.2)
 
     state["memory"].append({"role": "user", "content": summary_prompt})
     state["memory"].append({"role": "assistant", "content": summary})
