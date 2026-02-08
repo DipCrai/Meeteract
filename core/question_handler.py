@@ -1,12 +1,9 @@
 from llm.chat import ask_gpt
 from threading import Thread
-import app
+from ui.main_window import MainWindow
 
-def ask_question():
-    window = app.window
-    llm = app.llm
-    messages = app.messages
 
+def ask_question(window: MainWindow, llm, messages):
     user_input = window.get_user_input()
 
     if not user_input:

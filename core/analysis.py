@@ -11,18 +11,15 @@ from core.IO import save_file, load_file
 from llm.chat import init_gpt, summarize_meeting
 from ui.main_window import MainWindow
 
-import app
-
-def summarize():
-    window: MainWindow = app.window
+def summarize(window: MainWindow):
     analysis = Analysis(window)
 
     window.disable_controls()
 
-    app.llm, app.messages = llm, messages = analysis.init_gpt()
+    llm, messages = analysis.init_gpt()
     analysis.summarize(llm, messages)
 
-    window.set_question_handler(ask_question).enable_questions()
+    window.set_question_handler(lambda: ask_question(window, llm, messages)).enable_questions()
 
 class Analysis:
     def __init__(self, window: MainWindow):
@@ -106,5 +103,5 @@ class Analysis:
         except Exception as e:
             self.window.log(f"Ошибка резюме: {e}")
 
-def start_summarize_thread():
-    Thread(target=summarize, daemon=True).start()
+def start_summarize_thread(window: MainWindow):
+    Thread(target= lambda: summarize(window), daemon=True).start()
