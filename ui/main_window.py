@@ -34,8 +34,16 @@ class MainWindow:
         self.disable_questions()
 
     def choose_file(self) -> "MainWindow":
+        video_exts = "*.mp4 *.mkv *.avi *.mov *.wmv *.flv *.webm *.mpeg *.mpg *.m4v *.3gp"
+        audio_exts = "*.mp3 *.wav *.ogg *.flac *.aac *.m4a *.wma *.opus *.aiff"
+
         file_path = filedialog.askopenfilename(
-            title="Выберите аудио или видео файл"
+            title="Выберите аудио или видео файл",
+            filetypes=[
+                ("Все медиафайлы", f"{video_exts} {audio_exts}"),
+                ("Видео файлы", video_exts),
+                ("Аудио файлы", audio_exts)
+            ]
         )
         if file_path:
             self.selected_file.set(file_path)

@@ -7,7 +7,7 @@ def transcribe_segments(wav_path: str, segments, window: MainWindow, model_name:
     from soundfile import read
     from torch.cuda import is_available
 
-    window.log("Запуск Whisper для транскрипции...")
+    window.log("Запускаем Whisper для транскрипции...")
     device = "cuda" if is_available() else "cpu"
     model = load_model(model_name, device=device)
 

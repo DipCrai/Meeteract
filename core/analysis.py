@@ -16,10 +16,12 @@ def summarize(window: MainWindow):
 
     window.disable_controls()
 
-    llm, messages = analysis.init_gpt()
-    analysis.summarize(llm, messages)
-
-    window.set_question_handler(lambda: ask_question(window, llm, messages)).enable_questions()
+    try:
+        llm, messages = analysis.init_gpt()
+        analysis.summarize(llm, messages)
+        window.set_question_handler(lambda: ask_question(window, llm, messages)).enable_questions()
+    except Exception as e:
+        window.log(f"Ошибка резюме: {e}").enable_controls().disable_questions()
 
 class Analysis:
     def __init__(self, window: MainWindow):
@@ -38,17 +40,15 @@ class Analysis:
         file_path = self.choose_file()
 
         if file_path is None:
-            self.window.log("Ошибка конвертации")
             return None
 
-        self.window.log(f"Конвертировано в WAV: {file_path}")
+        self.window.log(f"Конвертируем в WAV: {file_path}...")
         return core_convert_to_wav(file_path)
 
     def diarize_audio(self) -> Any | None:
         file_path = self.convert_to_wav()
 
         if file_path is None:
-            self.window.log("Ошибка диаризации")
             return None
 
         self.window.log("Начинаем диаризацию...")
@@ -58,7 +58,6 @@ class Analysis:
         wav_path, segments = self.diarize_audio()
 
         if wav_path is None or segments is None:
-            self.window.log("Ошибка транскрибации")
             return None
 
         self.window.log("Транскрибируем сегменты...")
@@ -68,40 +67,34 @@ class Analysis:
         transcription = self.transcribe_segments()
 
         if transcription is None:
-            self.window.log("Ошибка сохранения")
             return None
 
-        self.window.log("Сохраняем транскрипт")
+        self.window.log("Сохраняем транскрипт...")
         return save_file(transcription)
 
     def load_transcript(self) -> str | None:
         file_path = self.save_transcript()
 
         if file_path is None:
-            self.window.log("Ошибка загрузки")
             return None
 
-        self.window.log("Загружаем транскрипт")
+        self.window.log("Загружаем транскрипт...")
         return load_file(file_path)
 
     def init_gpt(self) -> Any | None:
         transcript_text: str = self.load_transcript()
 
         if transcript_text is None:
-            self.window.log("Ошибка инициализации модели")
             return None
 
-        self.window.log("Инициализация локальной LLM...")
+        self.window.log("Инициализируем локальную LLM...")
         return init_gpt(transcript_text, self.window)
 
     def summarize(self, llm, messages):
         self.window.log("\nРЕЗЮМЕ ВСТРЕЧИ:\n")
 
-        try:
-            summary = summarize_meeting(llm, messages)
-            self.window.log(summary)
-        except Exception as e:
-            self.window.log(f"Ошибка резюме: {e}")
+        summary = summarize_meeting(llm, messages)
+        self.window.log(summary)
 
 def start_summarize_thread(window: MainWindow):
     Thread(target= lambda: summarize(window), daemon=True).start()
