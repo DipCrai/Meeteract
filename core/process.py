@@ -1,4 +1,4 @@
-from subprocess import run, DEVNULL, CREATE_NO_WINDOW
+from subprocess import run, DEVNULL
 
 def run_hidden(cmd: list[str]):
     return run(
@@ -6,6 +6,5 @@ def run_hidden(cmd: list[str]):
         check=True,
         stdout=DEVNULL,
         stderr=DEVNULL,
-        stdin=DEVNULL,
-        creationflags=CREATE_NO_WINDOW
+        stdin=DEVNULL
     )

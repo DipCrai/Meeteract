@@ -9,15 +9,17 @@ class MainWindow:
         self.root = Tk()
         self.root.title("ИИ Помощник для онлайн конференций (Qwen2.5-7B)")
         self.root.geometry("700x520")
-        self.root.resizable(False, False)
 
-        self.log_text = Text(self.root, wrap="word", state="disabled", height=20)
-        self.log_text.pack(fill="x", padx=10, pady=(10, 6))
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+
+        self.log_text = Text(self.root, wrap="word", state="disabled")
+        self.log_text.grid(row=0, column=0, sticky="nsew", padx=10, pady=(10, 6))
 
         self.selected_file = StringVar()
 
         controls = Frame(self.root)
-        controls.pack(fill="x", padx=10, pady=(0, 10))
+        controls.grid(row=1, column=0, sticky="ew", padx=10, pady=(0, 10))
 
         self.btn_choose_file = Button(controls, text="Выбрать файл", command=self.choose_file)
         self.btn_choose_file.pack(fill="x", pady=(0, 6))
@@ -30,6 +32,9 @@ class MainWindow:
 
         self.btn_ask = Button(controls, text="Задать вопрос")
         self.btn_ask.pack(fill="x")
+
+        self.root.update_idletasks()
+        self.root.resizable(False, False)
 
         self.disable_questions()
 
